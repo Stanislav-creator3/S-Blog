@@ -1,0 +1,158 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
+}
+
+model User {
+  id String @id @default(uuid())
+
+  email    String @unique
+  password String
+
+  username    String @unique
+  displayName String @map("display_name")
+
+  avatar String?
+  bio    String?
+
+  posts Post[]
+
+  isVerified Boolean @default(false)
+
+  isEmailVerified Boolean @default(false)
+
+  isTotpEnabled Boolean @default(false)
+  totpSecret    String?
+
+  socialLinks SocialLink[]
+  tokens      Token[]
+
+  followers  Follow[] @relation(name: "followers")
+  followings Follow[] @relation(name: "followings")
+
+  likes     Like[]
+  comments  Comment[]
+  bookMarks BookMark[]
+
+  isDeactivated Boolean   @default(false)
+  deactivatedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BookMark {
+  id String @id @default(uuid())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Follow {
+  id String @id @default(uuid())
+
+  follower   User   @relation(name: "followers", fields: [followerId], references: [id], onDelete: Cascade)
+  followerId String
+
+  following   User   @relation(name: "followings", fields: [followingId], references: [id], onDelete: Cascade)
+  followingId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([followerId, followingId])
+  @@index([followerId])
+  @@index([followingId])
+}
+
+model Post {
+  id String @id @default(uuid())
+
+  title   String
+  content String
+
+  imageUrl String?
+
+  viewsCount Int @default(0)
+
+  tags String[]
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  comments  Comment[]
+  likes     Like[]
+  bookMarks BookMark[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+}
+
+model Comment {
+  id      String @id @default(uuid())
+  content String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+  post    Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Like {
+  id     String @id @default(uuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SocialLink {
+  id String @id @default(uuid())
+
+  title    String
+  url      String
+  position Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String?
+}
+
+model Token {
+  id String @id @default(uuid())
+
+  token String    @unique
+  type  TokenType
+
+  expiresIn DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String?
+}
+
+enum TokenType {
+  EMAIL_VERIFY
+  PASSWORD_RESET
+  DEACTIVATE_ACCOUNT
+  TELEGRAM_AUTH
+}

@@ -1,0 +1,121 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-base-accent: #0182ff;
+  --color-base-black: #464646;
+  --color-base-white: #ffffff;
+  --color-gray-terliary: #e9e9e9;
+  --color-border-hover: #444c62;
+  --color-grey-quatinary: #f6f6f6;
+  --color-grey-secondary: #fafbfc;
+}
+
+@font-face {
+  font-family: "Lota";
+  font-weight: 400;
+  font-style: normal;
+  src: url("../src/shared/ui/fonts/Lato-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Lota";
+  font-weight: 700;
+  font-style: normal;
+  src: url("../src/shared/ui/fonts/Lato-Bold.ttf");
+}
+
+@font-face {
+  font-family: "Lota";
+  font-weight: 900;
+  font-style: normal;
+  src: url("../src/shared/ui/fonts/Lato-Black.ttf");
+}
+
+@layer base {
+  :root {
+    --background: var(--color-base-white);
+    --background-card: rgba(255, 255, 255, 0.31);
+  }
+}
+
+@layer theme {
+  .dark {
+    --background: var(--color-base-black);
+  }
+}
+
+@layer base {
+  body {
+    font-family: "Lota", Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    color: var(--color-base-black);
+    background: var(--background);
+    min-height: 100vh;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply overscroll-none;
+  }
+
+  h1 {
+    @apply text-2xl;
+  }
+  h2 {
+    @apply text-xl;
+  }
+}
+
+@utility background {
+  background: var(--background);
+  -webkit-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+  -moz-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+  box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+  border: 1px solid var(--color-gray-terliary);
+}
+
+@utility glass {
+  position: relative;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(2px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 2rem;
+  box-shadow:
+    0 8px 12px rgba(31, 38, 135, 0.2),
+    inset 0 4px 20px rgba(255, 255, 255, 0.3);
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2rem;
+    backdrop-filter: blur(1px);
+    box-shadow:
+      inset -10px -8px 0px -11px rgba(255, 255, 255, 1),
+      inset 0px -9px 0px -8px rgba(255, 255, 255, 1);
+    opacity: 0.6;
+    z-index: -1;
+    filter: blur(1px) drop-shadow(10px 4px 6px black) brightness(115%);
+  }
+}
+
+@utility background-header {
+  background: var(--color-base-white);
+  border: 1px solid var(--color-gray-terliary);
+}
+
+@utility background-sidebar {
+  background: var(--color-base-white);
+  border: 1px solid var(--color-gray-terliary);
+}

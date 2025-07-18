@@ -1,0 +1,5 @@
+.container {
+    display: grid;
+    grid-template-columns:
+      [start] 4fr [end] 1fr;
+  }
